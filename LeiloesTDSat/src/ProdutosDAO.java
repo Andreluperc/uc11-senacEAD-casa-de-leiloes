@@ -50,8 +50,41 @@ public class ProdutosDAO {
 
     }
     
-    public ArrayList<ProdutosDTO> listarProdutos(){
-        
+    public ArrayList<ProdutosDTO> listarProdutos() throws ClassNotFoundException {
+
+        ArrayList<ProdutosDTO> listagem = new ArrayList<>();
+
+        try {
+            
+            conectaDAO conn = new conectaDAO();
+            conn.connectDB();
+
+            String sql = "SELECT id, nome, valor, status FROM produtos";
+
+            PreparedStatement ps = conn.getConn().prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                ProdutosDTO produtos = new ProdutosDTO();
+
+                produtos.setId(rs.getInt("Id"));
+                produtos.setNome(rs.getString("Nome"));
+                produtos.setValor(rs.getInt("Valor"));
+                produtos.setStatus(rs.getString("Status"));
+
+                listagem.add(produtos);
+
+            }
+
+            conn.desconectar();
+
+        } catch (SQLException se) {
+
+            System.err.println("Erro ao listar produtos: " + se.getMessage());
+
+        }
+
         return listagem;
     }
     
