@@ -19,8 +19,7 @@ public class ProdutosDAO {
     Connection conn;
     PreparedStatement prep;
     ResultSet resultset;
-    ArrayList<ProdutosDTO> listagem = new ArrayList<>();
-
+    
     public static boolean cadastrarProduto(ProdutosDTO produto) throws ClassNotFoundException, SQLException {
 
         String sql = "INSERT INTO produtos (nome, valor, status) VALUES (?, ?, ?)";
@@ -122,6 +121,30 @@ public class ProdutosDAO {
         }
 
         return listagemVendidos;
+    }
+    
+    public static boolean venderProduto(int id) throws ClassNotFoundException, SQLException{
+        
+        try {
+
+            conectaDAO conn = new conectaDAO();
+            conn.connectDB();
+
+            String sql = "UPDATE produtos SET status = ? WHERE id = ?";
+
+            PreparedStatement ps = conn.getConn().prepareStatement(sql);
+            ps.setString(1,"Vendido");
+            ps.setInt(2, id);
+
+            int linhasAlteradas = ps.executeUpdate();
+            System.out.println("Produto vendido com sucesso. Linhas afetadas: " + linhasAlteradas);
+            conn.desconectar();
+
+            return linhasAlteradas > 0; //Retorna true se pelo menos uma linha foi afetada
+        } catch (SQLException se) {
+            System.err.println("Erro ao vender o produto: " + se.getMessage());
+            return false;
+        }
     }
 
 }
