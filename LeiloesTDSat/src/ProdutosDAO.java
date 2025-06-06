@@ -7,7 +7,6 @@
  *
  * @author Adm
  */
-
 import java.sql.PreparedStatement;
 import java.sql.Connection;
 import javax.swing.JOptionPane;
@@ -15,14 +14,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-
 public class ProdutosDAO {
-    
+
     Connection conn;
     PreparedStatement prep;
     ResultSet resultset;
     ArrayList<ProdutosDTO> listagem = new ArrayList<>();
-    
+
     public static boolean cadastrarProduto(ProdutosDTO produto) throws ClassNotFoundException, SQLException {
 
         String sql = "INSERT INTO produtos (nome, valor, status) VALUES (?, ?, ?)";
@@ -49,13 +47,13 @@ public class ProdutosDAO {
         }
 
     }
-    
+
     public ArrayList<ProdutosDTO> listarProdutos() throws ClassNotFoundException {
 
         ArrayList<ProdutosDTO> listagem = new ArrayList<>();
 
         try {
-            
+
             conectaDAO conn = new conectaDAO();
             conn.connectDB();
 
@@ -87,9 +85,43 @@ public class ProdutosDAO {
 
         return listagem;
     }
-    
-    
-    
-        
-}
 
+    public ArrayList<ProdutosDTO> listarProdutosVendidos() throws ClassNotFoundException {
+
+        ArrayList<ProdutosDTO> listagemVendidos = new ArrayList<>();
+
+        try {
+
+            conectaDAO conn = new conectaDAO();
+            conn.connectDB();
+
+            String sql = "SELECT * FROM produtos WHERE status = 'Vendido'";
+
+            PreparedStatement ps = conn.getConn().prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                ProdutosDTO produtos = new ProdutosDTO();
+
+                produtos.setId(rs.getInt("Id"));
+                produtos.setNome(rs.getString("Nome"));
+                produtos.setValor(rs.getInt("Valor"));
+                produtos.setStatus(rs.getString("Status"));
+
+                listagemVendidos.add(produtos);
+
+            }
+
+            conn.desconectar();
+
+        } catch (SQLException se) {
+
+            System.err.println("Erro ao listar produtos: " + se.getMessage());
+
+        }
+
+        return listagemVendidos;
+    }
+
+}
