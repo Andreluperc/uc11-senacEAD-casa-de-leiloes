@@ -4,21 +4,18 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
-
-
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-
 /**
  *
  * @author Adm
  */
 public class conectaDAO {
-    
+
     private Connection conn;
-    
+
     public Connection connectDB() throws ClassNotFoundException {
 
         try {
@@ -33,5 +30,26 @@ public class conectaDAO {
 
         return conn;
     }
-    
+
+    public void desconectar() {
+
+        try {
+
+            if (conn != null && !conn.isClosed()) {
+
+                conn.close();
+                System.out.println("Desconectado");
+
+            }
+        } catch (SQLException se) {
+
+            System.out.println("Problema ao desconectar do banco." + se);
+
+        }
+
+    }
+
+    public Connection getConn() {
+        return conn;
+    }
 }
